@@ -4,11 +4,11 @@ kind: ClusterClaim
 metadata:
   name: cluster-01
 spec:
-  id: cluster01
+  id: cluster-01
   compositionSelector:
     matchLabels:
-      provider: azure
-      cluster: aks
+      provider: aws
+      cluster: eks
   parameters:
     nodeSize: small
     minNodeCount: 3
@@ -16,23 +16,25 @@ spec:
 apiVersion: v1
 kind: Secret
 metadata:
-  name: silly-demo-db-20240329200502-password
+  name: silly-demo-db-password
 data:
-  password: SVdpbGxOZXZlclRlbGxAMQ==
+  password: cG9zdGdyZXM=
 ---
 apiVersion: devopstoolkitseries.com/v1alpha1
 kind: SQLClaim
 metadata:
   name: silly-demo-db
 spec:
-  id: silly-demo-db-20240329200502
+  id: silly-demo-db
   compositionSelector:
     matchLabels:
-      provider: azure
+      provider: aws
       db: postgresql
   parameters:
-    version: "11"
+    version: "13"
     size: small
+    databases:
+      - silly-demo-db
 ---
 apiVersion: devopstoolkitseries.com/v1alpha1
 kind: AppClaim
@@ -52,4 +54,4 @@ spec:
     dbSecret:
       name: silly-demo-db
       namespace: a-team
-    kubernetesProviderConfigName: cluster01
+    kubernetesProviderConfigName: cluster-01
